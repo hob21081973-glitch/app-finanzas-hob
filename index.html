@@ -222,7 +222,7 @@
 
     <!-- ================= LÓGICA DE JAVASCRIPT ================= -->
     <script>
-        // Listas predeterminadas de detalles y almacenamiento
+        // Listas predeterminadas actualizadas
         let detallesIngreso = JSON.parse(localStorage.getItem('hob_detallesIngreso')) || ['Comision'];
         let detallesEgreso = JSON.parse(localStorage.getItem('hob_detallesEgreso')) || ['Pago De Luz'];
         let movimientos = JSON.parse(localStorage.getItem('hob_movimientos')) || [];
@@ -232,7 +232,6 @@
         // Inicializar aplicación al cargar la página
         window.onload = function() {
             document.getElementById('fecha').valueAsDate = new Date();
-            // Establecer el mes actual en el filtro de resúmenes
             const hoy = new Date();
             const mesStr = hoy.toISOString().slice(0, 7);
             document.getElementById('filtro-mes').value = mesStr;
@@ -333,13 +332,11 @@
             const observacion = document.getElementById('observacion').value;
 
             if (id) {
-                // Editar existente
                 const index = movimientos.findIndex(m => m.id == id);
                 if (index !== -1) {
                     movimientos[index] = { id: Number(id), fecha, cuenta, detalle, valor, observacion };
                 }
             } else {
-                // Crear nuevo
                 const nuevoMov = {
                     id: Date.now(),
                     fecha,
@@ -351,7 +348,6 @@
                 movimientos.push(nuevoMov);
             }
 
-            // Ordenar movimientos por fecha (más reciente a más antigua)
             movimientos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
             localStorage.setItem('hob_movimientos', JSON.stringify(movimientos));
@@ -378,7 +374,6 @@
 
             tbody.innerHTML = '';
 
-            // Filtrar y ordenar movimientos (más reciente a más antiguo)
             const movimientosFiltrados = movimientos.filter(m => {
                 return m.detalle.toLowerCase().includes(filtroBusqueda) || 
                        m.observacion.toLowerCase().includes(filtroBusqueda) ||
@@ -445,7 +440,7 @@
 
         // Renderizar Resúmenes y Gráfica
         function renderizarResumenes() {
-            const mesSeleccionado = document.getElementById('filtro-mes').value; // Formato YYYY-MM
+            const mesSeleccionado = document.getElementById('filtro-mes').value;
 
             const filtrados = movimientos.filter(m => {
                 if (!mesSeleccionado) return true;
@@ -469,7 +464,6 @@
 
             const balance = totalIngresos - totalEgresos;
 
-            // Actualizar tarjetas
             document.getElementById('resumen-total-ingresos').textContent = `L ${totalIngresos.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('resumen-total-egresos').textContent = `L ${totalEgresos.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             
@@ -477,7 +471,6 @@
             elBalance.textContent = `L ${balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             elBalance.className = `text-2xl font-bold mt-1 ${balance >= 0 ? 'text-blue-600' : 'text-rose-600'}`;
 
-            // Llenar tabla de acumulados por detalle
             const tbodyDetalles = document.getElementById('tabla-resumen-detalles');
             tbodyDetalles.innerHTML = '';
 
@@ -499,7 +492,6 @@
                 });
             }
 
-            // Actualizar Gráfica con Chart.js
             const ctx = document.getElementById('graficoFinanzas').getContext('2d');
             if (chartInstancia) {
                 chartInstancia.destroy();
