@@ -11,22 +11,17 @@
     <!-- Chart.js para los resúmenes gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Estilos para la transición lateral fluida */
+        /* Transición lateral optimizada tipo aplicación móvil */
         .tab-content {
             display: none;
             opacity: 0;
-            transform: translateX(30px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
         }
         .tab-content.active {
             display: block;
             opacity: 1;
             transform: translateX(0);
-        }
-        .tab-content.exit-left {
-            opacity: 0;
-            transform: translateX(-30px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
         }
     </style>
 </head>
@@ -86,9 +81,9 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Detalle del Movimiento</label>
                     <div class="flex gap-2">
                         <select id="movimiento-detalle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                            <!-- Se llena dinámicamente -->
+                            <!-- Se llena dinámicamente ordenado A-Z -->
                         </select>
-                        <button type="button" onclick="abrirModalDetalle()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium transition flex items-center gap-1 whitespace-nowrap" title="Administrar o agregar detalles">
+                        <button type="button" onclick="abrirModalDetalle()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium transition flex items-center gap-1 whitespace-nowrap" title="Gestionar detalles">
                             <i class="fa-solid fa-plus"></i> Gestionar
                         </button>
                     </div>
@@ -127,7 +122,7 @@
                 <h2 class="text-xl font-bold text-gray-800 flex items-center">
                     <i class="fa-solid fa-list text-emerald-600 mr-2"></i> Historial de Movimientos
                 </h2>
-                <!-- Doble Buscador (Mes y Texto) -->
+                <!-- Doble Buscador -->
                 <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                     <select id="buscador-mes" onchange="renderizarHistorial()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
                         <option value="">Todos los meses</option>
@@ -178,12 +173,12 @@
             <!-- Tarjetas de Totales -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-emerald-500">
-                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total INGRESOs</p>
-                    <h3 id="resumen-total-INGRESOs" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
+                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total INGRESOS</p>
+                    <h3 id="resumen-total-INGRESOS" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-rose-500">
-                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total EGRESOs</p>
-                    <h3 id="resumen-total-EGRESOs" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
+                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total EGRESOS</p>
+                    <h3 id="resumen-total-EGRESOS" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-blue-500">
                     <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Balance Neto</p>
@@ -195,7 +190,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Gráfica -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center items-center">
-                    <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e INGRESOs</h3>
+                    <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e INGRESOS</h3>
                     <div class="w-full max-w-xs h-64">
                         <canvas id="graficoFinanzas"></canvas>
                     </div>
@@ -236,7 +231,7 @@
             </div>
 
             <div class="mt-4">
-                <label class="block text-xs font-semibold text-gray-600 mb-2">Detalles existentes:</label>
+                <label class="block text-xs font-semibold text-gray-600 mb-2">Detalles existentes (A-Z):</label>
                 <div id="lista-gestion-detalles" class="max-h-48 overflow-y-auto divide-y divide-gray-100 border border-gray-200 rounded-lg p-2 bg-gray-50 text-sm">
                     <!-- Dinámico -->
                 </div>
@@ -279,7 +274,7 @@
                 const btn = document.getElementById(botones[t]);
 
                 if (t === pestana) {
-                    el.classList.remove('hidden', 'exit-left');
+                    el.classList.remove('hidden');
                     setTimeout(() => el.classList.add('active'), 10);
                     btn.className = "px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow";
                 } else {
@@ -298,12 +293,16 @@
             }
         }
 
+        // Actualizar opciones del select ordenadas alfabéticamente A-Z
         function actualizarDetalles() {
             const cuenta = document.getElementById('cuenta').value;
             const selectDetalle = document.getElementById('movimiento-detalle');
             selectDetalle.innerHTML = '';
 
-            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            // Ordenar alfabéticamente A-Z ignorando mayúsculas/minúsculas
+            lista.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+
             lista.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item;
@@ -329,7 +328,10 @@
 
         function renderizarListaGestionDetalles() {
             const cuenta = document.getElementById('cuenta').value;
-            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            // Ordenar alfabéticamente A-Z en la lista del modal
+            lista.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+
             const contenedor = document.getElementById('lista-gestion-detalles');
             contenedor.innerHTML = '';
 
@@ -338,14 +340,16 @@
                 return;
             }
 
-            lista.forEach((item, index) => {
+            lista.forEach((item) => {
+                // Encontrar el índice real en el array correspondiente para editar/eliminar correctamente
+                const indexReal = lista.indexOf(item);
                 const div = document.createElement('div');
                 div.className = "flex justify-between items-center py-1.5 px-2 hover:bg-gray-100 rounded";
                 div.innerHTML = `
                     <span class="font-medium text-gray-700">${item}</span>
                     <div class="space-x-2">
-                        <button onclick="editarDetalleModal('${cuenta}', ${index})" class="text-blue-600 hover:text-blue-800" title="Editar"><i class="fa-solid fa-pen text-xs"></i></button>
-                        <button onclick="eliminarDetalleModal('${cuenta}', ${index})" class="text-rose-600 hover:text-rose-800" title="Eliminar"><i class="fa-solid fa-trash text-xs"></i></button>
+                        <button onclick="editarDetalleModal('${cuenta}', ${indexReal})" class="text-blue-600 hover:text-blue-800" title="Editar"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="eliminarDetalleModal('${cuenta}', ${indexReal})" class="text-rose-600 hover:text-rose-800" title="Eliminar"><i class="fa-solid fa-trash text-xs"></i></button>
                     </div>
                 `;
                 contenedor.appendChild(div);
@@ -361,22 +365,20 @@
                 return;
             }
 
-            if (cuenta === 'INGRESO') {
-                if (!detallesINGRESO.includes(nuevoDetalle)) {
-                    detallesINGRESO.push(nuevoDetalle);
+            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            // Verificar si ya existe (sin importar mayúsculas)
+            const existe = lista.some(item => item.toLowerCase() === nuevoDetalle.toLowerCase());
+
+            if (!existe) {
+                lista.push(nuevoDetalle);
+                if (cuenta === 'INGRESO') {
                     localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
                 } else {
-                    alert('Este detalle ya existe.');
-                    return;
+                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
                 }
             } else {
-                if (!detallesEGRESO.includes(nuevoDetalle)) {
-                    detallesEGRESO.push(nuevoDetalle);
-                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
-                } else {
-                    alert('Este detalle ya existe.');
-                    return;
-                }
+                alert('Este detalle ya existe.');
+                return;
             }
 
             document.getElementById('nuevo-detalle-input').value = '';
@@ -384,13 +386,15 @@
         }
 
         function editarDetalleModal(cuenta, index) {
-            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
             const actual = lista[index];
             const nuevoNombre = prompt("Editar nombre del detalle:", actual);
 
             if (nuevoNombre && nuevoNombre.trim() !== "" && nuevoNombre.trim() !== actual) {
                 const nombreLimpio = nuevoNombre.trim();
-                if (lista.includes(nombreLimpio)) {
+                const existe = lista.some((item, idx) => idx !== index && item.toLowerCase() === nombreLimpio.toLowerCase());
+                
+                if (existe) {
                     alert('Ya existe un detalle con ese nombre.');
                     return;
                 }
@@ -406,7 +410,7 @@
         }
 
         function eliminarDetalleModal(cuenta, index) {
-            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
             if (lista.length <= 1) {
                 alert('Debe mantener al menos un detalle en la categoría.');
                 return;
@@ -593,41 +597,41 @@
                 return m.fecha.startsWith(mesSeleccionado);
             });
 
-            let totalINGRESOs = 0;
-            let totalEGRESOs = 0;
-            const INGRESOsDetalle = {};
-            const EGRESOsDetalle = {};
+            let totalINGRESOS = 0;
+            let totalEGRESOS = 0;
+            const INGRESOSDetalle = {};
+            const EGRESOSDetalle = {};
 
             filtrados.forEach(m => {
                 if (m.cuenta === 'INGRESO') {
-                    totalINGRESOs += m.valor;
-                    INGRESOsDetalle[m.detalle] = (INGRESOsDetalle[m.detalle] || 0) + m.valor;
+                    totalINGRESOS += m.valor;
+                    INGRESOSDetalle[m.detalle] = (INGRESOSDetalle[m.detalle] || 0) + m.valor;
                 } else {
-                    totalEGRESOs += m.valor;
-                    EGRESOsDetalle[m.detalle] = (EGRESOsDetalle[m.detalle] || 0) + m.valor;
+                    totalEGRESOS += m.valor;
+                    EGRESOSDetalle[m.detalle] = (EGRESOSDetalle[m.detalle] || 0) + m.valor;
                 }
             });
 
-            const balance = totalINGRESOs - totalEGRESOs;
+            const balance = totalINGRESOS - totalEGRESOS;
 
-            document.getElementById('resumen-total-INGRESOs').textContent = `L ${totalINGRESOs.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('resumen-total-EGRESOs').textContent = `L ${totalEGRESOs.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('resumen-total-INGRESOS').textContent = `L ${totalINGRESOS.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('resumen-total-EGRESOS').textContent = `L ${totalEGRESOS.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             
             const elBalance = document.getElementById('resumen-balance');
             elBalance.textContent = `L ${balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             elBalance.className = `text-2xl font-bold mt-1 ${balance >= 0 ? 'text-blue-600' : 'text-rose-600'}`;
 
-            const INGRESOsOrdenados = Object.entries(INGRESOsDetalle).sort((a, b) => b[1] - a[1]);
-            const EGRESOsOrdenados = Object.entries(EGRESOsDetalle).sort((a, b) => b[1] - a[1]);
+            const INGRESOSOrdenados = Object.entries(INGRESOSDetalle).sort((a, b) => b[1] - a[1]);
+            const EGRESOSOrdenados = Object.entries(EGRESOSDetalle).sort((a, b) => b[1] - a[1]);
 
             const tbodyDetalles = document.getElementById('tabla-resumen-detalles');
             tbodyDetalles.innerHTML = '';
 
-            const totalElementos = INGRESOsOrdenados.length + EGRESOsOrdenados.length;
+            const totalElementos = INGRESOSOrdenados.length + EGRESOSOrdenados.length;
             if (totalElementos === 0) {
                 tbodyDetalles.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-gray-400">No hay datos para este período.</td></tr>`;
             } else {
-                INGRESOsOrdenados.forEach(([detalle, valor]) => {
+                INGRESOSOrdenados.forEach(([detalle, valor]) => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
@@ -638,7 +642,7 @@
                     tbodyDetalles.appendChild(tr);
                 });
 
-                EGRESOsOrdenados.forEach(([detalle, valor]) => {
+                EGRESOSOrdenados.forEach(([detalle, valor]) => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
@@ -656,9 +660,9 @@
             chartInstancia = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['INGRESOs', 'EGRESOs'],
+                    labels: ['INGRESOS', 'EGRESOS'],
                     datasets: [{
-                        data: [totalINGRESOs, totalEGRESOs],
+                        data: [totalINGRESOS, totalEGRESOS],
                         backgroundColor: ['#10b981', '#f43f5e'],
                         borderWidth: 2
                     }]
