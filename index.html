@@ -72,12 +72,12 @@
                     <input type="date" id="fecha" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 </div>
 
-                <!-- Cuenta (Egreso o Ingreso) -->
+                <!-- Cuenta (EGRESO o INGRESO) -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Cuenta</label>
                     <select id="cuenta" onchange="actualizarDetalles()" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                        <option value="Ingreso">Ingreso</option>
-                        <option value="Egreso">Egreso</option>
+                        <option value="INGRESO">INGRESO</option>
+                        <option value="EGRESO">EGRESO</option>
                     </select>
                 </div>
 
@@ -178,12 +178,12 @@
             <!-- Tarjetas de Totales -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-emerald-500">
-                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Ingresos</p>
-                    <h3 id="resumen-total-ingresos" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
+                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total INGRESOs</p>
+                    <h3 id="resumen-total-INGRESOs" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-rose-500">
-                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Egresos</p>
-                    <h3 id="resumen-total-egresos" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
+                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total EGRESOs</p>
+                    <h3 id="resumen-total-EGRESOs" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-blue-500">
                     <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Balance Neto</p>
@@ -195,7 +195,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Gráfica -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center items-center">
-                    <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e Ingresos</h3>
+                    <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e INGRESOs</h3>
                     <div class="w-full max-w-xs h-64">
                         <canvas id="graficoFinanzas"></canvas>
                     </div>
@@ -255,8 +255,8 @@
 
     <!-- ================= LÓGICA DE JAVASCRIPT ================= -->
     <script>
-        let detallesIngreso = JSON.parse(localStorage.getItem('hob_detallesIngreso')) || ['Comision'];
-        let detallesEgreso = JSON.parse(localStorage.getItem('hob_detallesEgreso')) || ['Pago De Luz'];
+        let detallesINGRESO = JSON.parse(localStorage.getItem('hob_detallesINGRESO')) || ['COMISION'];
+        let detallesEGRESO = JSON.parse(localStorage.getItem('hob_detallesEGRESO')) || ['PAGO DE LUZ'];
         let movimientos = JSON.parse(localStorage.getItem('hob_movimientos')) || [];
 
         let chartInstancia = null;
@@ -303,7 +303,7 @@
             const selectDetalle = document.getElementById('movimiento-detalle');
             selectDetalle.innerHTML = '';
 
-            const lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
+            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
             lista.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item;
@@ -329,7 +329,7 @@
 
         function renderizarListaGestionDetalles() {
             const cuenta = document.getElementById('cuenta').value;
-            const lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
+            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
             const contenedor = document.getElementById('lista-gestion-detalles');
             contenedor.innerHTML = '';
 
@@ -361,18 +361,18 @@
                 return;
             }
 
-            if (cuenta === 'Ingreso') {
-                if (!detallesIngreso.includes(nuevoDetalle)) {
-                    detallesIngreso.push(nuevoDetalle);
-                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
+            if (cuenta === 'INGRESO') {
+                if (!detallesINGRESO.includes(nuevoDetalle)) {
+                    detallesINGRESO.push(nuevoDetalle);
+                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
                 } else {
                     alert('Este detalle ya existe.');
                     return;
                 }
             } else {
-                if (!detallesEgreso.includes(nuevoDetalle)) {
-                    detallesEgreso.push(nuevoDetalle);
-                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
+                if (!detallesEGRESO.includes(nuevoDetalle)) {
+                    detallesEGRESO.push(nuevoDetalle);
+                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
                 } else {
                     alert('Este detalle ya existe.');
                     return;
@@ -384,7 +384,7 @@
         }
 
         function editarDetalleModal(cuenta, index) {
-            const lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
+            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
             const actual = lista[index];
             const nuevoNombre = prompt("Editar nombre del detalle:", actual);
 
@@ -396,17 +396,17 @@
                 }
                 lista[index] = nombreLimpio;
 
-                if (cuenta === 'Ingreso') {
-                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
+                if (cuenta === 'INGRESO') {
+                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
                 } else {
-                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
+                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
                 }
                 renderizarListaGestionDetalles();
             }
         }
 
         function eliminarDetalleModal(cuenta, index) {
-            const lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
+            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
             if (lista.length <= 1) {
                 alert('Debe mantener al menos un detalle en la categoría.');
                 return;
@@ -414,10 +414,10 @@
 
             if (confirm('¿Estás seguro de eliminar este detalle?')) {
                 lista.splice(index, 1);
-                if (cuenta === 'Ingreso') {
-                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
+                if (cuenta === 'INGRESO') {
+                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
                 } else {
-                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
+                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
                 }
                 renderizarListaGestionDetalles();
             }
@@ -539,13 +539,13 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50 transition border-b";
 
-                const badgeColor = m.cuenta === 'Ingreso' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+                const badgeColor = m.cuenta === 'INGRESO' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
 
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-gray-600 font-medium">${formatearFecha(m.fecha)}</td>
                     <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor}">${m.cuenta}</span></td>
                     <td class="py-3 px-4 font-medium text-gray-800">${m.detalle}</td>
-                    <td class="py-3 px-4 font-bold ${m.cuenta === 'Ingreso' ? 'text-emerald-600' : 'text-rose-600'}">L ${m.valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 font-bold ${m.cuenta === 'INGRESO' ? 'text-emerald-600' : 'text-rose-600'}">L ${m.valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     <td class="py-3 px-4 text-gray-500 truncate max-w-xs">${m.observacion || '-'}</td>
                     <td class="py-3 px-4 text-center space-x-2">
                         <button onclick="cargarParaEditar(${m.id})" class="text-blue-600 hover:text-blue-800 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
@@ -593,56 +593,56 @@
                 return m.fecha.startsWith(mesSeleccionado);
             });
 
-            let totalIngresos = 0;
-            let totalEgresos = 0;
-            const ingresosDetalle = {};
-            const egresosDetalle = {};
+            let totalINGRESOs = 0;
+            let totalEGRESOs = 0;
+            const INGRESOsDetalle = {};
+            const EGRESOsDetalle = {};
 
             filtrados.forEach(m => {
-                if (m.cuenta === 'Ingreso') {
-                    totalIngresos += m.valor;
-                    ingresosDetalle[m.detalle] = (ingresosDetalle[m.detalle] || 0) + m.valor;
+                if (m.cuenta === 'INGRESO') {
+                    totalINGRESOs += m.valor;
+                    INGRESOsDetalle[m.detalle] = (INGRESOsDetalle[m.detalle] || 0) + m.valor;
                 } else {
-                    totalEgresos += m.valor;
-                    egresosDetalle[m.detalle] = (egresosDetalle[m.detalle] || 0) + m.valor;
+                    totalEGRESOs += m.valor;
+                    EGRESOsDetalle[m.detalle] = (EGRESOsDetalle[m.detalle] || 0) + m.valor;
                 }
             });
 
-            const balance = totalIngresos - totalEgresos;
+            const balance = totalINGRESOs - totalEGRESOs;
 
-            document.getElementById('resumen-total-ingresos').textContent = `L ${totalIngresos.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('resumen-total-egresos').textContent = `L ${totalEgresos.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('resumen-total-INGRESOs').textContent = `L ${totalINGRESOs.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('resumen-total-EGRESOs').textContent = `L ${totalEGRESOs.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             
             const elBalance = document.getElementById('resumen-balance');
             elBalance.textContent = `L ${balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             elBalance.className = `text-2xl font-bold mt-1 ${balance >= 0 ? 'text-blue-600' : 'text-rose-600'}`;
 
-            const ingresosOrdenados = Object.entries(ingresosDetalle).sort((a, b) => b[1] - a[1]);
-            const egresosOrdenados = Object.entries(egresosDetalle).sort((a, b) => b[1] - a[1]);
+            const INGRESOsOrdenados = Object.entries(INGRESOsDetalle).sort((a, b) => b[1] - a[1]);
+            const EGRESOsOrdenados = Object.entries(EGRESOsDetalle).sort((a, b) => b[1] - a[1]);
 
             const tbodyDetalles = document.getElementById('tabla-resumen-detalles');
             tbodyDetalles.innerHTML = '';
 
-            const totalElementos = ingresosOrdenados.length + egresosOrdenados.length;
+            const totalElementos = INGRESOsOrdenados.length + EGRESOsOrdenados.length;
             if (totalElementos === 0) {
                 tbodyDetalles.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-gray-400">No hay datos para este período.</td></tr>`;
             } else {
-                ingresosOrdenados.forEach(([detalle, valor]) => {
+                INGRESOsOrdenados.forEach(([detalle, valor]) => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
-                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Ingreso</span></td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">INGRESO</span></td>
                         <td class="py-2.5 px-3 font-medium text-gray-800">${detalle}</td>
                         <td class="py-2.5 px-3 text-right font-semibold text-emerald-600">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     `;
                     tbodyDetalles.appendChild(tr);
                 });
 
-                egresosOrdenados.forEach(([detalle, valor]) => {
+                EGRESOsOrdenados.forEach(([detalle, valor]) => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
-                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">Egreso</span></td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">EGRESO</span></td>
                         <td class="py-2.5 px-3 font-medium text-gray-800">${detalle}</td>
                         <td class="py-2.5 px-3 text-right font-semibold text-rose-600">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     `;
@@ -656,9 +656,9 @@
             chartInstancia = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Ingresos', 'Egresos'],
+                    labels: ['INGRESOs', 'EGRESOs'],
                     datasets: [{
-                        data: [totalIngresos, totalEgresos],
+                        data: [totalINGRESOs, totalEGRESOs],
                         backgroundColor: ['#10b981', '#f43f5e'],
                         borderWidth: 2
                     }]
