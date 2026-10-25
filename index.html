@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,7 @@
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
 
     <!-- Header / Navbar -->
-    <header class="bg-emerald-600 text-white shadow-md">
+    <header class="bg-emerald-600 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center space-x-3 mb-2 md:mb-0">
                 <i class="fa-solid fa-wallet text-2xl"></i>
@@ -35,11 +35,11 @@
         </div>
     </header>
 
-    <!-- Contenedor Principal -->
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+    <!-- Contenedor Principal con efecto de deslizamiento -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-12">
 
         <!-- ================= 1. PESTAÑA NUEVO MOVIMIENTO ================= -->
-        <section id="pestana-nuevo" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-100">
+        <section id="pestana-nuevo" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-100 transition-all duration-300">
             <h2 id="form-titulo" class="text-xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center">
                 <i class="fa-solid fa-pen-to-square text-emerald-600 mr-2"></i> Registrar Nuevo Movimiento
             </h2>
@@ -53,12 +53,12 @@
                     <input type="date" id="fecha" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 </div>
 
-                <!-- Cuenta (EGRESO o INGRESO) -->
+                <!-- Cuenta (Egreso o Ingreso) -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Cuenta</label>
                     <select id="cuenta" onchange="actualizarDetalles()" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                        <option value="INGRESO">INGRESO</option>
-                        <option value="EGRESO">EGRESO</option>
+                        <option value="Ingreso">Ingreso</option>
+                        <option value="Egreso">Egreso</option>
                     </select>
                 </div>
 
@@ -69,7 +69,7 @@
                         <select id="movimiento-detalle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
                             <!-- Se llena dinámicamente -->
                         </select>
-                        <button type="button" onclick="abrirModalDetalle()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium transition flex items-center gap-1" title="Administrar o agregar detalles">
+                        <button type="button" onclick="abrirModalDetalle()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium transition flex items-center gap-1 whitespace-nowrap" title="Administrar o agregar detalles">
                             <i class="fa-solid fa-plus"></i> Gestionar
                         </button>
                     </div>
@@ -103,14 +103,17 @@
         </section>
 
         <!-- ================= 2. PESTAÑA HISTORIAL DE MOVIMIENTOS ================= -->
-        <section id="pestana-historial" class="hidden space-y-6">
+        <section id="pestana-historial" class="hidden space-y-6 transition-all duration-300">
             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl font-bold text-gray-800 flex items-center">
                     <i class="fa-solid fa-list text-emerald-600 mr-2"></i> Historial de Movimientos
                 </h2>
-                <!-- Filtro de búsqueda rápida -->
-                <div class="w-full md:w-72">
-                    <input type="text" id="buscador-historial" onkeyup="renderizarHistorial()" placeholder="Buscar por detalle u observación..." class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <!-- Doble Buscador (Mes y Texto) -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <select id="buscador-mes" onchange="renderizarHistorial()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                        <option value="">Todos los meses</option>
+                    </select>
+                    <input type="text" id="buscador-historial" onkeyup="renderizarHistorial()" placeholder="Buscar detalle u observación..." class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 </div>
             </div>
 
@@ -140,7 +143,7 @@
         </section>
 
         <!-- ================= 3. PESTAÑA RESÚMENES ================= -->
-        <section id="pestana-resumenes" class="hidden space-y-6">
+        <section id="pestana-resumenes" class="hidden space-y-6 transition-all duration-300">
             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl font-bold text-gray-800 flex items-center">
                     <i class="fa-solid fa-chart-column text-emerald-600 mr-2"></i> Resúmenes Financieros
@@ -156,12 +159,12 @@
             <!-- Tarjetas de Totales -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-emerald-500">
-                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total INGRESOS</p>
-                    <h3 id="resumen-total-INGRESOS" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
+                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Ingresos</p>
+                    <h3 id="resumen-total-ingresos" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-rose-500">
-                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total EGRESOS</p>
-                    <h3 id="resumen-total-EGRESOS" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
+                    <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Egresos</p>
+                    <h3 id="resumen-total-egresos" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-blue-500">
                     <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Balance Neto</p>
@@ -173,7 +176,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Gráfica -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center items-center">
-                    <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e INGRESOS</h3>
+                    <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e Ingresos</h3>
                     <div class="w-full max-w-xs h-64">
                         <canvas id="graficoFinanzas"></canvas>
                     </div>
@@ -208,17 +211,15 @@
             <h3 class="text-lg font-bold text-gray-800">Gestionar Detalles</h3>
             <p id="modal-subtitulo" class="text-xs text-gray-500">Agrega, edita o elimina detalles para esta categoría.</p>
             
-            <!-- Input para nuevo detalle -->
             <div class="flex gap-2">
-                <input type="text" id="nuevo-detalle-input" placeholder="Nuevo detalle (ej. Ventas extra)..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+                <input type="text" id="nuevo-detalle-input" placeholder="Nuevo detalle..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
                 <button type="button" onclick="guardarNuevoDetalle()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition whitespace-nowrap">Agregar</button>
             </div>
 
-            <!-- Lista actual de detalles con opciones -->
             <div class="mt-4">
                 <label class="block text-xs font-semibold text-gray-600 mb-2">Detalles existentes:</label>
                 <div id="lista-gestion-detalles" class="max-h-48 overflow-y-auto divide-y divide-gray-100 border border-gray-200 rounded-lg p-2 bg-gray-50 text-sm">
-                    <!-- Se llena dinámicamente -->
+                    <!-- Dinámico -->
                 </div>
             </div>
 
@@ -235,8 +236,8 @@
 
     <!-- ================= LÓGICA DE JAVASCRIPT ================= -->
     <script>
-        let detallesINGRESO = JSON.parse(localStorage.getItem('hob_detallesINGRESO')) || ['COMISION'];
-        let detallesEGRESO = JSON.parse(localStorage.getItem('hob_detallesEGRESO')) || ['PAGO DE LUZ'];
+        let detallesIngreso = JSON.parse(localStorage.getItem('hob_detallesIngreso')) || ['Comision'];
+        let detallesEgreso = JSON.parse(localStorage.getItem('hob_detallesEgreso')) || ['Pago De Luz'];
         let movimientos = JSON.parse(localStorage.getItem('hob_movimientos')) || [];
 
         let chartInstancia = null;
@@ -244,12 +245,12 @@
         window.onload = function() {
             document.getElementById('fecha').valueAsDate = new Date();
             actualizarDetalles();
-            poblarSelectorMeses();
+            poblarSelectoresMeses();
             renderizarHistorial();
             renderizarResumenes();
         };
 
-        // Cambio de pestañas
+        // Cambio suave de pestañas con desplazamiento
         function cambiarPestana(pestana) {
             document.getElementById('pestana-nuevo').classList.add('hidden');
             document.getElementById('pestana-historial').classList.add('hidden');
@@ -260,27 +261,33 @@
             document.getElementById('btn-resumenes').className = "px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600";
 
             if (pestana === 'nuevo') {
-                document.getElementById('pestana-nuevo').classList.remove('hidden');
+                const sec = document.getElementById('pestana-nuevo');
+                sec.classList.remove('hidden');
                 document.getElementById('btn-nuevo').className = "px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow";
+                sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else if (pestana === 'historial') {
-                document.getElementById('pestana-historial').classList.remove('hidden');
+                const sec = document.getElementById('pestana-historial');
+                sec.classList.remove('hidden');
                 document.getElementById('btn-historial').className = "px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow";
+                poblarSelectoresMeses();
                 renderizarHistorial();
+                sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else if (pestana === 'resumenes') {
-                document.getElementById('pestana-resumenes').classList.remove('hidden');
+                const sec = document.getElementById('pestana-resumenes');
+                sec.classList.remove('hidden');
                 document.getElementById('btn-resumenes').className = "px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow";
-                poblarSelectorMeses();
+                poblarSelectoresMeses();
                 renderizarResumenes();
+                sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
-        // Actualizar opciones del select de detalles
         function actualizarDetalles() {
             const cuenta = document.getElementById('cuenta').value;
             const selectDetalle = document.getElementById('movimiento-detalle');
             selectDetalle.innerHTML = '';
 
-            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            const lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             lista.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item;
@@ -289,7 +296,6 @@
             });
         }
 
-        // Modal para gestionar detalles (Agregar, Editar, Eliminar)
         function abrirModalDetalle() {
             const cuenta = document.getElementById('cuenta').value;
             document.getElementById('modal-subtitulo').textContent = `Administrar detalles para la categoría de ${cuenta}.`;
@@ -307,7 +313,7 @@
 
         function renderizarListaGestionDetalles() {
             const cuenta = document.getElementById('cuenta').value;
-            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            const lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             const contenedor = document.getElementById('lista-gestion-detalles');
             contenedor.innerHTML = '';
 
@@ -322,8 +328,8 @@
                 div.innerHTML = `
                     <span class="font-medium text-gray-700">${item}</span>
                     <div class="space-x-2">
-                        <button onclick="editarDetalleModal('${cuenta}', ${index})" class="text-blue-600 hover:text-blue-800" title="Editar detalle"><i class="fa-solid fa-pen text-xs"></i></button>
-                        <button onclick="eliminarDetalleModal('${cuenta}', ${index})" class="text-rose-600 hover:text-rose-800" title="Eliminar detalle"><i class="fa-solid fa-trash text-xs"></i></button>
+                        <button onclick="editarDetalleModal('${cuenta}', ${index})" class="text-blue-600 hover:text-blue-800" title="Editar"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="eliminarDetalleModal('${cuenta}', ${index})" class="text-rose-600 hover:text-rose-800" title="Eliminar"><i class="fa-solid fa-trash text-xs"></i></button>
                     </div>
                 `;
                 contenedor.appendChild(div);
@@ -335,22 +341,22 @@
             const cuenta = document.getElementById('cuenta').value;
 
             if (!nuevoDetalle) {
-                alert('Por favor ingresa un nombre válido para el detalle.');
+                alert('Por favor ingresa un nombre válido.');
                 return;
             }
 
-            if (cuenta === 'INGRESO') {
-                if (!detallesINGRESO.includes(nuevoDetalle)) {
-                    detallesINGRESO.push(nuevoDetalle);
-                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
+            if (cuenta === 'Ingreso') {
+                if (!detallesIngreso.includes(nuevoDetalle)) {
+                    detallesIngreso.push(nuevoDetalle);
+                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
                     alert('Este detalle ya existe.');
                     return;
                 }
             } else {
-                if (!detallesEGRESO.includes(nuevoDetalle)) {
-                    detallesEGRESO.push(nuevoDetalle);
-                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
+                if (!detallesEgreso.includes(nuevoDetalle)) {
+                    detallesEgreso.push(nuevoDetalle);
+                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
                 } else {
                     alert('Este detalle ya existe.');
                     return;
@@ -362,7 +368,7 @@
         }
 
         function editarDetalleModal(cuenta, index) {
-            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            const lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             const actual = lista[index];
             const nuevoNombre = prompt("Editar nombre del detalle:", actual);
 
@@ -374,17 +380,17 @@
                 }
                 lista[index] = nombreLimpio;
 
-                if (cuenta === 'INGRESO') {
-                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
+                if (cuenta === 'Ingreso') {
+                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
-                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
+                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
                 }
                 renderizarListaGestionDetalles();
             }
         }
 
         function eliminarDetalleModal(cuenta, index) {
-            const lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            const lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             if (lista.length <= 1) {
                 alert('Debe mantener al menos un detalle en la categoría.');
                 return;
@@ -392,16 +398,15 @@
 
             if (confirm('¿Estás seguro de eliminar este detalle?')) {
                 lista.splice(index, 1);
-                if (cuenta === 'INGRESO') {
-                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
+                if (cuenta === 'Ingreso') {
+                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
-                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
+                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
                 }
                 renderizarListaGestionDetalles();
             }
         }
 
-        // Formateador de fecha a dd/mm/yyyy
         function formatearFecha(fechaStr) {
             if (!fechaStr) return '';
             const partes = fechaStr.split('-');
@@ -411,7 +416,7 @@
             return fechaStr;
         }
 
-        // Guardar o Actualizar Movimiento
+        // Guardar Movimiento y mantener foco en Fecha
         function guardarMovimiento(event) {
             event.preventDefault();
 
@@ -439,13 +444,13 @@
                 movimientos.push(nuevoMov);
             }
 
-            // Ordenar siempre de la más reciente a la más antigua
             movimientos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
             localStorage.setItem('hob_movimientos', JSON.stringify(movimientos));
+            
+            // Limpiar formulario pero mantenernos en la misma pestaña y enfocar Fecha
             limpiarFormulario();
             alert('¡Movimiento guardado exitosamente!');
-            cambiarPestana('historial');
         }
 
         function limpiarFormulario() {
@@ -456,23 +461,59 @@
             document.getElementById('btn-guardar').textContent = "Guardar Movimiento";
             document.getElementById('btn-cancelar').classList.add('hidden');
             actualizarDetalles();
+            // Foco directo en la caja de texto Fecha
+            document.getElementById('fecha').focus();
         }
 
-        // Renderizar Historial de Movimientos
+        function poblarSelectoresMeses() {
+            const selectMesHistorial = document.getElementById('buscador-mes');
+            const selectMesResumen = document.getElementById('filtro-mes');
+            
+            const valHistorial = selectMesHistorial.value;
+            const valResumen = selectMesResumen.value;
+
+            const mesesSet = new Set();
+            movimientos.forEach(m => {
+                if (m.fecha) mesesSet.add(m.fecha.slice(0, 7));
+            });
+
+            const mesesArray = Array.from(mesesSet).sort().reverse();
+            const nombresMeses = {
+                '01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril',
+                '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto',
+                '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre'
+            };
+
+            let optionsHTML = '<option value="">Todos los meses</option>';
+            mesesArray.forEach(anioMes => {
+                const [anio, mesNum] = anioMes.split('-');
+                optionsHTML += `<option value="${anioMes}">${nombresMeses[mesNum] || mesNum} ${anio}</option>`;
+            });
+
+            selectMesHistorial.innerHTML = optionsHTML;
+            selectMesResumen.innerHTML = optionsHTML;
+
+            if (mesesArray.includes(valHistorial)) selectMesHistorial.value = valHistorial;
+            if (mesesArray.includes(valResumen)) selectMesResumen.value = valResumen;
+        }
+
+        // Renderizar Historial con doble buscador
         function renderizarHistorial() {
             const tbody = document.getElementById('tabla-historial');
             const mensajeVacio = document.getElementById('historial-vacio');
             const filtroBusqueda = document.getElementById('buscador-historial').value.toLowerCase();
+            const filtroMes = document.getElementById('buscador-mes').value;
 
             tbody.innerHTML = '';
 
-            // Asegurar orden estricto de más reciente a más antigua
             movimientos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
             const movimientosFiltrados = movimientos.filter(m => {
-                return m.detalle.toLowerCase().includes(filtroBusqueda) || 
-                       m.observacion.toLowerCase().includes(filtroBusqueda) ||
-                       formatearFecha(m.fecha).includes(filtroBusqueda);
+                const coincideTexto = m.detalle.toLowerCase().includes(filtroBusqueda) || 
+                                       m.observacion.toLowerCase().includes(filtroBusqueda) ||
+                                       formatearFecha(m.fecha).includes(filtroBusqueda);
+                const coincideMes = !filtroMes || m.fecha.startsWith(filtroMes);
+                return coincideTexto && coincideMes;
             });
 
             if (movimientosFiltrados.length === 0) {
@@ -486,13 +527,13 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50 transition border-b";
 
-                const badgeColor = m.cuenta === 'INGRESO' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+                const badgeColor = m.cuenta === 'Ingreso' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
 
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-gray-600 font-medium">${formatearFecha(m.fecha)}</td>
                     <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor}">${m.cuenta}</span></td>
                     <td class="py-3 px-4 font-medium text-gray-800">${m.detalle}</td>
-                    <td class="py-3 px-4 font-bold ${m.cuenta === 'INGRESO' ? 'text-emerald-600' : 'text-rose-600'}">L ${m.valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 font-bold ${m.cuenta === 'Ingreso' ? 'text-emerald-600' : 'text-rose-600'}">L ${m.valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     <td class="py-3 px-4 text-gray-500 truncate max-w-xs">${m.observacion || '-'}</td>
                     <td class="py-3 px-4 text-center space-x-2">
                         <button onclick="cargarParaEditar(${m.id})" class="text-blue-600 hover:text-blue-800 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
@@ -503,7 +544,6 @@
             });
         }
 
-        // Cargar movimiento en formulario para editar
         function cargarParaEditar(id) {
             const m = movimientos.find(item => item.id == id);
             if (!m) return;
@@ -523,119 +563,95 @@
             cambiarPestana('nuevo');
         }
 
-        // Eliminar movimiento
         function eliminarMovimiento(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este movimiento?')) {
                 movimientos = movimientos.filter(m => m.id != id);
                 localStorage.setItem('hob_movimientos', JSON.stringify(movimientos));
+                poblarSelectoresMeses();
                 renderizarHistorial();
                 renderizarResumenes();
             }
         }
 
-        // Poblar el selector de meses en texto en los resúmenes
-        function poblarSelectorMeses() {
-            const selectMes = document.getElementById('filtro-mes');
-            const valorActual = selectMes.value;
-            
-            // Obtener meses únicos de los movimientos
-            const mesesSet = new Set();
-            movimientos.forEach(m => {
-                if (m.fecha) {
-                    const anioMes = m.fecha.slice(0, 7); // YYYY-MM
-                    mesesSet.add(anioMes);
-                }
-            });
-
-            const mesesArray = Array.from(mesesSet).sort().reverse(); // Más reciente primero
-
-            selectMes.innerHTML = '<option value="">Todos los meses</option>';
-
-            const nombresMeses = {
-                '01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril',
-                '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto',
-                '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre'
-            };
-
-            mesesArray.forEach(anioMes => {
-                const [anio, mesNum] = anioMes.split('-');
-                const nombreMesTexto = nombresMeses[mesNum] || mesNum;
-                const option = document.createElement('option');
-                option.value = anioMes;
-                option.textContent = `${nombreMesTexto} ${anio}`;
-                selectMes.appendChild(option);
-            });
-
-            if (mesesArray.includes(valorActual)) {
-                selectMes.value = valorActual;
-            }
-        }
-
-        // Renderizar Resúmenes y Gráfica
+        // Renderizar Resúmenes con orden específico: Ingresos mayor a menor, luego Egresos mayor a menor
         function renderizarResumenes() {
-            const mesSeleccionado = document.getElementById('filtro-mes').value; // Formato YYYY-MM
+            const mesSeleccionado = document.getElementById('filtro-mes').value;
 
             const filtrados = movimientos.filter(m => {
                 if (!mesSeleccionado) return true;
                 return m.fecha.startsWith(mesSeleccionado);
             });
 
-            let totalINGRESOS = 0;
-            let totalEGRESOS = 0;
-            const acumuladosDetalle = {};
+            let totalIngresos = 0;
+            let totalEgresos = 0;
+            const ingresosDetalle = {};
+            const egresosDetalle = {};
 
             filtrados.forEach(m => {
-                if (m.cuenta === 'INGRESO') {
-                    totalINGRESOS += m.valor;
+                if (m.cuenta === 'Ingreso') {
+                    totalIngresos += m.valor;
+                    ingresosDetalle[m.detalle] = (ingresosDetalle[m.detalle] || 0) + m.valor;
                 } else {
-                    totalEGRESOS += m.valor;
+                    totalEgresos += m.valor;
+                    egresosDetalle[m.detalle] = (egresosDetalle[m.detalle] || 0) + m.valor;
                 }
-
-                const clave = `${m.cuenta}|${m.detalle}`;
-                acumuladosDetalle[clave] = (acumuladosDetalle[clave] || 0) + m.valor;
             });
 
-            const balance = totalINGRESOS - totalEGRESOS;
+            const balance = totalIngresos - totalEgresos;
 
-            document.getElementById('resumen-total-INGRESOS').textContent = `L ${totalINGRESOS.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('resumen-total-EGRESOS').textContent = `L ${totalEGRESOS.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('resumen-total-ingresos').textContent = `L ${totalIngresos.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('resumen-total-egresos').textContent = `L ${totalEgresos.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             
             const elBalance = document.getElementById('resumen-balance');
             elBalance.textContent = `L ${balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             elBalance.className = `text-2xl font-bold mt-1 ${balance >= 0 ? 'text-blue-600' : 'text-rose-600'}`;
 
+            // Ordenar Ingresos de mayor a menor
+            const ingresosOrdenados = Object.entries(ingresosDetalle).sort((a, b) => b[1] - a[1]);
+            // Ordenar Egresos de mayor a menor
+            const egresosOrdenados = Object.entries(egresosDetalle).sort((a, b) => b[1] - a[1]);
+
             const tbodyDetalles = document.getElementById('tabla-resumen-detalles');
             tbodyDetalles.innerHTML = '';
 
-            const keys = Object.keys(acumuladosDetalle);
-            if (keys.length === 0) {
+            const totalElementos = ingresosOrdenados.length + egresosOrdenados.length;
+            if (totalElementos === 0) {
                 tbodyDetalles.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-gray-400">No hay datos para este período.</td></tr>`;
             } else {
-                keys.forEach(k => {
-                    const [tipo, detalle] = k.split('|');
-                    const valor = acumuladosDetalle[k];
+                // Primero Ingresos
+                ingresosOrdenados.forEach(([detalle, valor]) => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
-                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold ${tipo === 'INGRESO' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${tipo}</span></td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Ingreso</span></td>
                         <td class="py-2.5 px-3 font-medium text-gray-800">${detalle}</td>
-                        <td class="py-2.5 px-3 text-right font-semibold text-gray-700">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td class="py-2.5 px-3 text-right font-semibold text-emerald-600">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    `;
+                    tbodyDetalles.appendChild(tr);
+                });
+
+                // Después Egresos
+                egresosOrdenados.forEach(([detalle, valor]) => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-gray-50 border-b";
+                    tr.innerHTML = `
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">Egreso</span></td>
+                        <td class="py-2.5 px-3 font-medium text-gray-800">${detalle}</td>
+                        <td class="py-2.5 px-3 text-right font-semibold text-rose-600">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     `;
                     tbodyDetalles.appendChild(tr);
                 });
             }
 
             const ctx = document.getElementById('graficoFinanzas').getContext('2d');
-            if (chartInstancia) {
-                chartInstancia.destroy();
-            }
+            if (chartInstancia) chartInstancia.destroy();
 
             chartInstancia = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['INGRESOS', 'EGRESOS'],
+                    labels: ['Ingresos', 'Egresos'],
                     datasets: [{
-                        data: [totalINGRESOS, totalEGRESOS],
+                        data: [totalIngresos, totalEgresos],
                         backgroundColor: ['#10b981', '#f43f5e'],
                         borderWidth: 2
                     }]
@@ -643,11 +659,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
+                    plugins: { legend: { position: 'bottom' } }
                 }
             });
         }
