@@ -11,7 +11,6 @@
     <!-- Chart.js para los resúmenes gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Contenedor deslizante para el efecto de carrusel móvil */
         .tabs-container {
             display: flex;
             width: 300%;
@@ -81,8 +80,8 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Detalle del Movimiento</label>
                             <div class="flex gap-2">
-                                <select id="movimiento-detalle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                                    <!-- Dinámico A-Z -->
+                                <select id="movimiento-detalle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white uppercase">
+                                    <!-- Dinámico A-Z en Mayúsculas -->
                                 </select>
                                 <button type="button" onclick="abrirModalDetalle()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium transition flex items-center gap-1 whitespace-nowrap" title="Gestionar detalles">
                                     <i class="fa-solid fa-plus"></i> Gestionar
@@ -102,7 +101,7 @@
                         <!-- Observación -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Observación</label>
-                            <textarea id="observacion" rows="3" placeholder="Escribe un comentario opcional..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                            <textarea id="observacion" rows="3" placeholder="Escribe un comentario opcional..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none uppercase"></textarea>
                         </div>
 
                         <!-- Botones de Acción -->
@@ -129,7 +128,7 @@
                         <select id="buscador-mes" onchange="renderizarHistorial()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
                             <option value="">Todos los meses</option>
                         </select>
-                        <input type="text" id="buscador-historial" onkeyup="renderizarHistorial()" placeholder="Buscar detalle u observación..." class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <input type="text" id="buscador-historial" onkeyup="renderizarHistorial()" placeholder="Buscar detalle u observación..." class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none uppercase">
                     </div>
                 </div>
 
@@ -146,7 +145,7 @@
                                     <th class="py-3 px-4 text-center">Opciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-historial" class="divide-y divide-gray-200 text-sm">
+                            <tbody id="tabla-historial" class="divide-y divide-gray-200 text-sm uppercase">
                                 <!-- Dinámico -->
                             </tbody>
                         </table>
@@ -202,7 +201,7 @@
                     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
                         <h3 class="text-md font-bold text-gray-700 mb-4">Acumulado por Detalle</h3>
                         <div class="overflow-x-auto max-h-64 overflow-y-auto">
-                            <table class="w-full text-left text-sm">
+                            <table class="w-full text-left text-sm uppercase">
                                 <thead>
                                     <tr class="bg-gray-100 text-gray-700 text-xs uppercase">
                                         <th class="py-2 px-3">Tipo</th>
@@ -225,17 +224,17 @@
     <!-- ================= MODAL PARA GESTIONAR DETALLES ================= -->
     <div id="modal-detalle" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden justify-center items-center z-50 p-4">
         <div class="bg-white p-6 rounded-xl shadow-xl max-w-md w-full space-y-4">
-            <h3 class="text-lg font-bold text-gray-800">Gestionar Detalles</h3>
+            <h3 class="text-lg font-bold text-gray-800">GESTIONAR DETALLES</h3>
             <p id="modal-subtitulo" class="text-xs text-gray-500">Agrega, edita o elimina detalles para esta categoría.</p>
             
             <div class="flex gap-2">
-                <input type="text" id="nuevo-detalle-input" placeholder="Nuevo detalle..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+                <input type="text" id="nuevo-detalle-input" placeholder="NUEVO DETALLE..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm uppercase">
                 <button type="button" onclick="guardarNuevoDetalle()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition whitespace-nowrap">Agregar</button>
             </div>
 
             <div class="mt-4">
                 <label class="block text-xs font-semibold text-gray-600 mb-2">Detalles existentes (A-Z):</label>
-                <div id="lista-gestion-detalles" class="max-h-48 overflow-y-auto divide-y divide-gray-100 border border-gray-200 rounded-lg p-2 bg-gray-50 text-sm">
+                <div id="lista-gestion-detalles" class="max-h-48 overflow-y-auto divide-y divide-gray-100 border border-gray-200 rounded-lg p-2 bg-gray-50 text-sm uppercase">
                     <!-- Dinámico -->
                 </div>
             </div>
@@ -253,12 +252,23 @@
 
     <!-- ================= LÓGICA DE JAVASCRIPT ================= -->
     <script>
-        let detallesIngreso = JSON.parse(localStorage.getItem('hob_detallesIngreso')) || ['Comision'];
-        let detallesEgreso = JSON.parse(localStorage.getItem('hob_detallesEgreso')) || ['Pago De Luz'];
+        // Cargar datos en mayúsculas desde localStorage
+        let rawIngresos = JSON.parse(localStorage.getItem('hob_detallesIngreso')) || ['COMISION'];
+        let detallesIngreso = rawIngresos.map(item => item.toUpperCase());
+
+        let rawEgresos = JSON.parse(localStorage.getItem('hob_detallesEgreso')) || ['PAGO DE LUZ'];
+        let detallesEgreso = rawEgresos.map(item => item.toUpperCase());
+
         let movimientos = JSON.parse(localStorage.getItem('hob_movimientos')) || [];
+        // Asegurar movimientos pasados en mayúsculas también
+        movimientos.forEach(m => {
+            m.cuenta = m.cuenta.toUpperCase();
+            m.detalle = m.detalle.toUpperCase();
+            if(m.observacion) m.observacion = m.observacion.toUpperCase();
+        });
 
         let chartInstancia = null;
-        let pestanaActualIndex = 0; // 0: Nuevo, 1: Historial, 2: Resúmenes
+        let pestanaActualIndex = 0;
         const pestanasKeys = ['nuevo', 'historial', 'resumenes'];
 
         window.onload = function() {
@@ -270,7 +280,6 @@
             inicializarGestosTactiles();
         };
 
-        // Cambiar pestaña mediante botones o gestos táctiles
         function cambiarPestana(pestana, index) {
             pestanaActualIndex = index;
             const slider = document.getElementById('tabs-slider');
@@ -295,7 +304,6 @@
             }
         }
 
-        // ================= DETECTOR DE GESTOS TÁCTILES (SWIPE) =================
         function inicializarGestosTactiles() {
             const container = document.getElementById('app-main-container');
             let touchStartX = 0;
@@ -311,16 +319,14 @@
             }, { passive: true });
 
             function manejarSwipe() {
-                const umbralMinimo = 50; // Distancia mínima en píxeles para reconocer el deslizamiento
+                const umbralMinimo = 50;
                 if (touchEndX < touchStartX - umbralMinimo) {
-                    // Deslizar a la IZQUIERDA -> Siguiente pestaña
                     if (pestanaActualIndex < pestanasKeys.length - 1) {
                         pestanaActualIndex++;
                         cambiarPestana(pestanasKeys[pestanaActualIndex], pestanaActualIndex);
                     }
                 }
                 if (touchEndX > touchStartX + umbralMinimo) {
-                    // Deslizar a la DERECHA -> Pestaña anterior
                     if (pestanaActualIndex > 0) {
                         pestanaActualIndex--;
                         cambiarPestana(pestanasKeys[pestanaActualIndex], pestanaActualIndex);
@@ -329,12 +335,13 @@
             }
         }
 
+        // Actualizar select de detalles filtrando estrictamente por Ingreso o Egreso en MAYÚSCULAS
         function actualizarDetalles() {
-            const cuenta = document.getElementById('cuenta').value;
+            const cuenta = document.getElementById('cuenta').value.toUpperCase();
             const selectDetalle = document.getElementById('movimiento-detalle');
             selectDetalle.innerHTML = '';
 
-            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
+            let lista = cuenta === 'INGRESO' ? detallesIngreso : detallesEgreso;
             lista.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 
             lista.forEach(item => {
@@ -346,7 +353,7 @@
         }
 
         function abrirModalDetalle() {
-            const cuenta = document.getElementById('cuenta').value;
+            const cuenta = document.getElementById('cuenta').value.toUpperCase();
             document.getElementById('modal-subtitulo').textContent = `Administrar detalles para la categoría de ${cuenta}.`;
             document.getElementById('nuevo-detalle-input').value = '';
             renderizarListaGestionDetalles();
@@ -361,8 +368,8 @@
         }
 
         function renderizarListaGestionDetalles() {
-            const cuenta = document.getElementById('cuenta').value;
-            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
+            const cuenta = document.getElementById('cuenta').value.toUpperCase();
+            let lista = cuenta === 'INGRESO' ? detallesIngreso : detallesEgreso;
             lista.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 
             const contenedor = document.getElementById('lista-gestion-detalles');
@@ -389,20 +396,20 @@
         }
 
         function guardarNuevoDetalle() {
-            const nuevoDetalle = document.getElementById('nuevo-detalle-input').value.trim();
-            const cuenta = document.getElementById('cuenta').value;
+            const nuevoDetalle = document.getElementById('nuevo-detalle-input').value.trim().toUpperCase();
+            const cuenta = document.getElementById('cuenta').value.toUpperCase();
 
             if (!nuevoDetalle) {
                 alert('Por favor ingresa un nombre válido.');
                 return;
             }
 
-            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
-            const existe = lista.some(item => item.toLowerCase() === nuevoDetalle.toLowerCase());
+            let lista = cuenta === 'INGRESO' ? detallesIngreso : detallesEgreso;
+            const existe = lista.includes(nuevoDetalle);
 
             if (!existe) {
                 lista.push(nuevoDetalle);
-                if (cuenta === 'Ingreso') {
+                if (cuenta === 'INGRESO') {
                     localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
                     localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
@@ -417,21 +424,19 @@
         }
 
         function editarDetalleModal(cuenta, index) {
-            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
+            let lista = cuenta === 'INGRESO' ? detallesIngreso : detallesEgreso;
             const actual = lista[index];
             const nuevoNombre = prompt("Editar nombre del detalle:", actual);
 
-            if (nuevoNombre && nuevoNombre.trim() !== "" && nuevoNombre.trim() !== actual) {
-                const nombreLimpio = nuevoNombre.trim();
-                const existe = lista.some((item, idx) => idx !== index && item.toLowerCase() === nombreLimpio.toLowerCase());
-                
-                if (existe) {
+            if (nuevoNombre && nuevoNombre.trim() !== "") {
+                const nombreLimpio = nuevoNombre.trim().toUpperCase();
+                if (nombreLimpio !== actual && lista.includes(nombreLimpio)) {
                     alert('Ya existe un detalle con ese nombre.');
                     return;
                 }
                 lista[index] = nombreLimpio;
 
-                if (cuenta === 'Ingreso') {
+                if (cuenta === 'INGRESO') {
                     localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
                     localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
@@ -441,7 +446,7 @@
         }
 
         function eliminarDetalleModal(cuenta, index) {
-            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
+            let lista = cuenta === 'INGRESO' ? detallesIngreso : detallesEgreso;
             if (lista.length <= 1) {
                 alert('Debe mantener al menos un detalle en la categoría.');
                 return;
@@ -449,7 +454,7 @@
 
             if (confirm('¿Estás seguro de eliminar este detalle?')) {
                 lista.splice(index, 1);
-                if (cuenta === 'Ingreso') {
+                if (cuenta === 'INGRESO') {
                     localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
                     localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
@@ -472,10 +477,10 @@
 
             const id = document.getElementById('movimiento-id').value;
             const fecha = document.getElementById('fecha').value;
-            const cuenta = document.getElementById('cuenta').value;
-            const detalle = document.getElementById('movimiento-detalle').value;
+            const cuenta = document.getElementById('cuenta').value.toUpperCase();
+            const detalle = document.getElementById('movimiento-detalle').value.toUpperCase();
             const valor = parseFloat(document.getElementById('valor').value);
-            const observacion = document.getElementById('observacion').value;
+            const observacion = document.getElementById('observacion').value.toUpperCase();
 
             if (id) {
                 const index = movimientos.findIndex(m => m.id == id);
@@ -527,12 +532,12 @@
 
             const mesesArray = Array.from(mesesSet).sort().reverse();
             const nombresMeses = {
-                '01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril',
-                '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto',
-                '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre'
+                '01': 'ENERO', '02': 'FEBRERO', '03': 'MARZO', '04': 'ABRIL',
+                '05': 'MAYO', '06': 'JUNIO', '07': 'JULIO', '08': 'AGOSTO',
+                '09': 'SEPTIEMBRE', '10': 'OCTUBRE', '11': 'NOVIEMBRE', '12': 'DICIEMBRE'
             };
 
-            let optionsHTML = '<option value="">Todos los meses</option>';
+            let optionsHTML = '<option value="">TODOS LOS MESES</option>';
             mesesArray.forEach(anioMes => {
                 const [anio, mesNum] = anioMes.split('-');
                 optionsHTML += `<option value="${anioMes}">${nombresMeses[mesNum] || mesNum} ${anio}</option>`;
@@ -574,13 +579,13 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50 transition border-b";
 
-                const badgeColor = m.cuenta === 'Ingreso' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+                const badgeColor = m.cuenta === 'INGRESO' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
 
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-gray-600 font-medium">${formatearFecha(m.fecha)}</td>
                     <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor}">${m.cuenta}</span></td>
                     <td class="py-3 px-4 font-medium text-gray-800">${m.detalle}</td>
-                    <td class="py-3 px-4 font-bold ${m.cuenta === 'Ingreso' ? 'text-emerald-600' : 'text-rose-600'}">L ${m.valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 font-bold ${m.cuenta === 'INGRESO' ? 'text-emerald-600' : 'text-rose-600'}">L ${m.valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     <td class="py-3 px-4 text-gray-500 truncate max-w-xs">${m.observacion || '-'}</td>
                     <td class="py-3 px-4 text-center space-x-2">
                         <button onclick="cargarParaEditar(${m.id})" class="text-blue-600 hover:text-blue-800 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
@@ -634,7 +639,7 @@
             const egresosDetalle = {};
 
             filtrados.forEach(m => {
-                if (m.cuenta === 'Ingreso') {
+                if (m.cuenta === 'INGRESO') {
                     totalIngresos += m.valor;
                     ingresosDetalle[m.detalle] = (ingresosDetalle[m.detalle] || 0) + m.valor;
                 } else {
@@ -666,7 +671,7 @@
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
-                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Ingreso</span></td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">INGRESO</span></td>
                         <td class="py-2.5 px-3 font-medium text-gray-800">${detalle}</td>
                         <td class="py-2.5 px-3 text-right font-semibold text-emerald-600">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     `;
@@ -677,7 +682,7 @@
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
-                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">Egreso</span></td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">EGRESO</span></td>
                         <td class="py-2.5 px-3 font-medium text-gray-800">${detalle}</td>
                         <td class="py-2.5 px-3 text-right font-semibold text-rose-600">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     `;
@@ -691,7 +696,7 @@
             chartInstancia = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Ingresos', 'Egresos'],
+                    labels: ['INGRESOS', 'EGRESOS'],
                     datasets: [{
                         data: [totalIngresos, totalEgresos],
                         backgroundColor: ['#10b981', '#f43f5e'],
