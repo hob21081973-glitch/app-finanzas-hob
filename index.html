@@ -11,16 +11,16 @@
     <!-- Chart.js para los resúmenes gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Contenedor con desplazamiento lateral fluido tipo App Móvil */
-        .app-container {
+        /* Contenedor deslizante para el efecto de carrusel móvil */
+        .tabs-container {
             display: flex;
             width: 300%;
             transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .app-tab {
-            width: 33.3333%;
+        .tab-pane {
+            width: 33.333%;
             flex-shrink: 0;
-            box-sizing: border-box;
+            padding: 0 4px;
         }
     </style>
 </head>
@@ -35,26 +35,26 @@
             </div>
             <!-- Navegación por pestañas -->
             <nav class="flex space-x-2 bg-emerald-700 p-1 rounded-lg">
-                <button onclick="cambiarPestana(0, 'nuevo')" id="btn-nuevo" class="px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow">
+                <button onclick="cambiarPestana('nuevo', 0)" id="btn-nuevo" class="px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow">
                     <i class="fa-solid fa-plus-circle mr-1"></i> Nuevo Movimiento
                 </button>
-                <button onclick="cambiarPestana(1, 'historial')" id="btn-historial" class="px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600">
+                <button onclick="cambiarPestana('historial', 1)" id="btn-historial" class="px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600">
                     <i class="fa-solid fa-clock-rotate-left mr-1"></i> Historial
                 </button>
-                <button onclick="cambiarPestana(2, 'resumenes')" id="btn-resumenes" class="px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600">
+                <button onclick="cambiarPestana('resumenes', 2)" id="btn-resumenes" class="px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600">
                     <i class="fa-solid fa-chart-pie mr-1"></i> Resúmenes
                 </button>
             </nav>
         </div>
     </header>
 
-    <!-- Contenedor Principal con Desplazamiento Lateral -->
-    <main class="flex-grow w-full overflow-hidden relative">
-        <div id="slider-container" class="app-container">
+    <!-- Contenedor Principal con Soporte Táctil (Swipe) -->
+    <main id="app-main-container" class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full overflow-hidden">
+        <div id="tabs-slider" class="tabs-container">
 
             <!-- ================= 1. PESTAÑA NUEVO MOVIMIENTO ================= -->
-            <section class="app-tab px-4 py-6">
-                <div id="pestana-nuevo" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-100">
+            <section id="pestana-nuevo" class="tab-pane max-w-2xl mx-auto w-full">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-100">
                     <h2 id="form-titulo" class="text-xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center">
                         <i class="fa-solid fa-pen-to-square text-emerald-600 mr-2"></i> Registrar Nuevo Movimiento
                     </h2>
@@ -102,7 +102,7 @@
                         <!-- Observación -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Observación</label>
-                            <textarea id="observacion" rows="3" placeholder="Escribe un comentario opcional sobre este movimiento..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                            <textarea id="observacion" rows="3" placeholder="Escribe un comentario opcional..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
                         </div>
 
                         <!-- Botones de Acción -->
@@ -119,103 +119,101 @@
             </section>
 
             <!-- ================= 2. PESTAÑA HISTORIAL DE MOVIMIENTOS ================= -->
-            <section class="app-tab px-4 py-6">
-                <div class="max-w-7xl mx-auto space-y-6">
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-list text-emerald-600 mr-2"></i> Historial de Movimientos
-                        </h2>
-                        <!-- Doble Buscador -->
-                        <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                            <select id="buscador-mes" onchange="renderizarHistorial()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                                <option value="">Todos los meses</option>
-                            </select>
-                            <input type="text" id="buscador-historial" onkeyup="renderizarHistorial()" placeholder="Buscar detalle u observación..." class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                        </div>
+            <section id="pestana-historial" class="tab-pane w-full space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fa-solid fa-list text-emerald-600 mr-2"></i> Historial de Movimientos
+                    </h2>
+                    <!-- Doble Buscador -->
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <select id="buscador-mes" onchange="renderizarHistorial()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                            <option value="">Todos los meses</option>
+                        </select>
+                        <input type="text" id="buscador-historial" onkeyup="renderizarHistorial()" placeholder="Buscar detalle u observación..." class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
+                </div>
 
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider border-b">
-                                        <th class="py-3 px-4">Fecha</th>
-                                        <th class="py-3 px-4">Tipo</th>
-                                        <th class="py-3 px-4">Detalle (Movimiento)</th>
-                                        <th class="py-3 px-4">Valor</th>
-                                        <th class="py-3 px-4">Observación</th>
-                                        <th class="py-3 px-4 text-center">Opciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-historial" class="divide-y divide-gray-200 text-sm">
-                                    <!-- Dinámico -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="historial-vacio" class="text-center py-12 text-gray-500 hidden">
-                            <i class="fa-regular fa-folder-open text-4xl mb-2 text-gray-400"></i>
-                            <p>No hay movimientos registrados todavía.</p>
-                        </div>
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider border-b">
+                                    <th class="py-3 px-4">Fecha</th>
+                                    <th class="py-3 px-4">Tipo</th>
+                                    <th class="py-3 px-4">Detalle (Movimiento)</th>
+                                    <th class="py-3 px-4">Valor</th>
+                                    <th class="py-3 px-4">Observación</th>
+                                    <th class="py-3 px-4 text-center">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-historial" class="divide-y divide-gray-200 text-sm">
+                                <!-- Dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="historial-vacio" class="text-center py-12 text-gray-500 hidden">
+                        <i class="fa-regular fa-folder-open text-4xl mb-2 text-gray-400"></i>
+                        <p>No hay movimientos registrados todavía.</p>
                     </div>
                 </div>
             </section>
 
             <!-- ================= 3. PESTAÑA RESÚMENES ================= -->
-            <section class="app-tab px-4 py-6">
-                <div class="max-w-7xl mx-auto space-y-6">
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-chart-column text-emerald-600 mr-2"></i> Resúmenes Financieros
-                        </h2>
-                        <div>
-                            <label class="text-sm font-semibold text-gray-700 mr-2">Filtrar por Mes:</label>
-                            <select id="filtro-mes" onchange="renderizarResumenes()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                                <option value="">Todos los meses</option>
-                            </select>
+            <section id="pestana-resumenes" class="tab-pane w-full space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fa-solid fa-chart-column text-emerald-600 mr-2"></i> Resúmenes Financieros
+                    </h2>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700 mr-2">Filtrar por Mes:</label>
+                        <select id="filtro-mes" onchange="renderizarResumenes()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                            <option value="">Todos los meses</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tarjetas de Totales -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-emerald-500">
+                        <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Ingresos</p>
+                        <h3 id="resumen-total-ingresos" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-rose-500">
+                        <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Egresos</p>
+                        <h3 id="resumen-total-egresos" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-blue-500">
+                        <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Balance Neto</p>
+                        <h3 id="resumen-balance" class="text-2xl font-bold text-blue-600 mt-1">L 0.00</h3>
+                    </div>
+                </div>
+
+                <!-- Gráfica y Tabla Resumen -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Gráfica -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center items-center">
+                        <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e Ingresos</h3>
+                        <div class="w-full max-w-xs h-64">
+                            <canvas id="graficoFinanzas"></canvas>
                         </div>
                     </div>
 
-                    <!-- Tarjetas de Totales -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-emerald-500">
-                            <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Ingresos</p>
-                            <h3 id="resumen-total-ingresos" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-rose-500">
-                            <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Egresos</p>
-                            <h3 id="resumen-total-egresos" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-blue-500">
-                            <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Balance Neto</p>
-                            <h3 id="resumen-balance" class="text-2xl font-bold text-blue-600 mt-1">L 0.00</h3>
-                        </div>
-                    </div>
-
-                    <!-- Gráfica y Tabla Resumen -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center items-center">
-                            <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e Ingresos</h3>
-                            <div class="w-full max-w-xs h-64">
-                                <canvas id="graficoFinanzas"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                            <h3 class="text-md font-bold text-gray-700 mb-4">Acumulado por Detalle</h3>
-                            <div class="overflow-x-auto max-h-64 overflow-y-auto">
-                                <table class="w-full text-left text-sm">
-                                    <thead>
-                                        <tr class="bg-gray-100 text-gray-700 text-xs uppercase">
-                                            <th class="py-2 px-3">Tipo</th>
-                                            <th class="py-2 px-3">Detalle</th>
-                                            <th class="py-2 px-3 text-right">Valor Acumulado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-resumen-detalles" class="divide-y divide-gray-200">
-                                        <!-- Dinámico -->
-                                    </tbody>
-                                </table>
-                            </div>
+                    <!-- Tabla de Acumulados por Cuenta/Detalle -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                        <h3 class="text-md font-bold text-gray-700 mb-4">Acumulado por Detalle</h3>
+                        <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-700 text-xs uppercase">
+                                        <th class="py-2 px-3">Tipo</th>
+                                        <th class="py-2 px-3">Detalle</th>
+                                        <th class="py-2 px-3 text-right">Valor Acumulado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-resumen-detalles" class="divide-y divide-gray-200">
+                                    <!-- Dinámico -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -260,6 +258,8 @@
         let movimientos = JSON.parse(localStorage.getItem('hob_movimientos')) || [];
 
         let chartInstancia = null;
+        let pestanaActualIndex = 0; // 0: Nuevo, 1: Historial, 2: Resúmenes
+        const pestanasKeys = ['nuevo', 'historial', 'resumenes'];
 
         window.onload = function() {
             document.getElementById('fecha').valueAsDate = new Date();
@@ -267,18 +267,19 @@
             poblarSelectoresMeses();
             renderizarHistorial();
             renderizarResumenes();
+            inicializarGestosTactiles();
         };
 
-        // Desplazamiento lateral real por traslación de contenedor
-        function cambiarPestana(index, pestana) {
-            const slider = document.getElementById('slider-container');
-            // Desplazar el contenedor horizontalmente según la pestaña (0%, -33.333%, -66.666%)
-            slider.style.transform = `translateX(-${index * 33.3333}%)`;
+        // Cambiar pestaña mediante botones o gestos táctiles
+        function cambiarPestana(pestana, index) {
+            pestanaActualIndex = index;
+            const slider = document.getElementById('tabs-slider');
+            slider.style.transform = `translateX(-${index * 33.333}%)`;
 
-            const botones = { 0: 'btn-nuevo', 1: 'btn-historial', 2: 'btn-resumenes' };
-            [0, 1, 2].forEach(i => {
-                const btn = document.getElementById(botones[i]);
-                if (i === index) {
+            const botones = { 'nuevo': 'btn-nuevo', 'historial': 'btn-historial', 'resumenes': 'btn-resumenes' };
+            pestanasKeys.forEach(t => {
+                const btn = document.getElementById(botones[t]);
+                if (t === pestana) {
                     btn.className = "px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow";
                 } else {
                     btn.className = "px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600";
@@ -291,6 +292,40 @@
             } else if (pestana === 'resumenes') {
                 poblarSelectoresMeses();
                 renderizarResumenes();
+            }
+        }
+
+        // ================= DETECTOR DE GESTOS TÁCTILES (SWIPE) =================
+        function inicializarGestosTactiles() {
+            const container = document.getElementById('app-main-container');
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            container.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            container.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                manejarSwipe();
+            }, { passive: true });
+
+            function manejarSwipe() {
+                const umbralMinimo = 50; // Distancia mínima en píxeles para reconocer el deslizamiento
+                if (touchEndX < touchStartX - umbralMinimo) {
+                    // Deslizar a la IZQUIERDA -> Siguiente pestaña
+                    if (pestanaActualIndex < pestanasKeys.length - 1) {
+                        pestanaActualIndex++;
+                        cambiarPestana(pestanasKeys[pestanaActualIndex], pestanaActualIndex);
+                    }
+                }
+                if (touchEndX > touchStartX + umbralMinimo) {
+                    // Deslizar a la DERECHA -> Pestaña anterior
+                    if (pestanaActualIndex > 0) {
+                        pestanaActualIndex--;
+                        cambiarPestana(pestanasKeys[pestanaActualIndex], pestanaActualIndex);
+                    }
+                }
             }
         }
 
@@ -572,7 +607,7 @@
             document.getElementById('btn-guardar').textContent = "Actualizar Movimiento";
             document.getElementById('btn-cancelar').classList.remove('hidden');
 
-            cambiarPestana(0, 'nuevo');
+            cambiarPestana('nuevo', 0);
         }
 
         function eliminarMovimiento(id) {
