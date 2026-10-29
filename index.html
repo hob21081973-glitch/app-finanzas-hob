@@ -11,16 +11,16 @@
     <!-- Chart.js para los resúmenes gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Contenedor deslizante para forzar el movimiento lateral real */
-        .tabs-container {
+        /* Contenedor con desplazamiento lateral fluido tipo App Móvil */
+        .app-container {
             display: flex;
             width: 300%;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .tab-pane {
-            width: 33.333%;
+        .app-tab {
+            width: 33.3333%;
             flex-shrink: 0;
-            padding: 0 4px;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -35,26 +35,26 @@
             </div>
             <!-- Navegación por pestañas -->
             <nav class="flex space-x-2 bg-emerald-700 p-1 rounded-lg">
-                <button onclick="cambiarPestana('nuevo', 0)" id="btn-nuevo" class="px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow">
+                <button onclick="cambiarPestana(0, 'nuevo')" id="btn-nuevo" class="px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow">
                     <i class="fa-solid fa-plus-circle mr-1"></i> Nuevo Movimiento
                 </button>
-                <button onclick="cambiarPestana('historial', 1)" id="btn-historial" class="px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600">
+                <button onclick="cambiarPestana(1, 'historial')" id="btn-historial" class="px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600">
                     <i class="fa-solid fa-clock-rotate-left mr-1"></i> Historial
                 </button>
-                <button onclick="cambiarPestana('resumenes', 2)" id="btn-resumenes" class="px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600">
+                <button onclick="cambiarPestana(2, 'resumenes')" id="btn-resumenes" class="px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600">
                     <i class="fa-solid fa-chart-pie mr-1"></i> Resúmenes
                 </button>
             </nav>
         </div>
     </header>
 
-    <!-- Contenedor Principal con Desplazamiento Lateral Forzado -->
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full overflow-hidden">
-        <div id="tabs-slider" class="tabs-container">
+    <!-- Contenedor Principal con Desplazamiento Lateral -->
+    <main class="flex-grow w-full overflow-hidden relative">
+        <div id="slider-container" class="app-container">
 
             <!-- ================= 1. PESTAÑA NUEVO MOVIMIENTO ================= -->
-            <section id="pestana-nuevo" class="tab-pane max-w-2xl mx-auto w-full">
-                <div class="bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-100">
+            <section class="app-tab px-4 py-6">
+                <div id="pestana-nuevo" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-100">
                     <h2 id="form-titulo" class="text-xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center">
                         <i class="fa-solid fa-pen-to-square text-emerald-600 mr-2"></i> Registrar Nuevo Movimiento
                     </h2>
@@ -68,12 +68,12 @@
                             <input type="date" id="fecha" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                         </div>
 
-                        <!-- Cuenta (EGRESO o INGRESO) -->
+                        <!-- Cuenta (Egreso o Ingreso) -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Cuenta</label>
                             <select id="cuenta" onchange="actualizarDetalles()" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                                <option value="INGRESO">INGRESO</option>
-                                <option value="EGRESO">EGRESO</option>
+                                <option value="Ingreso">Ingreso</option>
+                                <option value="Egreso">Egreso</option>
                             </select>
                         </div>
 
@@ -102,7 +102,7 @@
                         <!-- Observación -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Observación</label>
-                            <textarea id="observacion" rows="3" placeholder="Escribe un comentario opcional..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                            <textarea id="observacion" rows="3" placeholder="Escribe un comentario opcional sobre este movimiento..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
                         </div>
 
                         <!-- Botones de Acción -->
@@ -119,101 +119,103 @@
             </section>
 
             <!-- ================= 2. PESTAÑA HISTORIAL DE MOVIMIENTOS ================= -->
-            <section id="pestana-historial" class="tab-pane w-full space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fa-solid fa-list text-emerald-600 mr-2"></i> Historial de Movimientos
-                    </h2>
-                    <!-- Doble Buscador -->
-                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                        <select id="buscador-mes" onchange="renderizarHistorial()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                            <option value="">Todos los meses</option>
-                        </select>
-                        <input type="text" id="buscador-historial" onkeyup="renderizarHistorial()" placeholder="Buscar detalle u observación..." class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <section class="app-tab px-4 py-6">
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <i class="fa-solid fa-list text-emerald-600 mr-2"></i> Historial de Movimientos
+                        </h2>
+                        <!-- Doble Buscador -->
+                        <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                            <select id="buscador-mes" onchange="renderizarHistorial()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                                <option value="">Todos los meses</option>
+                            </select>
+                            <input type="text" id="buscador-historial" onkeyup="renderizarHistorial()" placeholder="Buscar detalle u observación..." class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
                     </div>
-                </div>
 
-                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider border-b">
-                                    <th class="py-3 px-4">Fecha</th>
-                                    <th class="py-3 px-4">Tipo</th>
-                                    <th class="py-3 px-4">Detalle (Movimiento)</th>
-                                    <th class="py-3 px-4">Valor</th>
-                                    <th class="py-3 px-4">Observación</th>
-                                    <th class="py-3 px-4 text-center">Opciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-historial" class="divide-y divide-gray-200 text-sm">
-                                <!-- Dinámico -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="historial-vacio" class="text-center py-12 text-gray-500 hidden">
-                        <i class="fa-regular fa-folder-open text-4xl mb-2 text-gray-400"></i>
-                        <p>No hay movimientos registrados todavía.</p>
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider border-b">
+                                        <th class="py-3 px-4">Fecha</th>
+                                        <th class="py-3 px-4">Tipo</th>
+                                        <th class="py-3 px-4">Detalle (Movimiento)</th>
+                                        <th class="py-3 px-4">Valor</th>
+                                        <th class="py-3 px-4">Observación</th>
+                                        <th class="py-3 px-4 text-center">Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-historial" class="divide-y divide-gray-200 text-sm">
+                                    <!-- Dinámico -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="historial-vacio" class="text-center py-12 text-gray-500 hidden">
+                            <i class="fa-regular fa-folder-open text-4xl mb-2 text-gray-400"></i>
+                            <p>No hay movimientos registrados todavía.</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <!-- ================= 3. PESTAÑA RESÚMENES ================= -->
-            <section id="pestana-resumenes" class="tab-pane w-full space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fa-solid fa-chart-column text-emerald-600 mr-2"></i> Resúmenes Financieros
-                    </h2>
-                    <div>
-                        <label class="text-sm font-semibold text-gray-700 mr-2">Filtrar por Mes:</label>
-                        <select id="filtro-mes" onchange="renderizarResumenes()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
-                            <option value="">Todos los meses</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Tarjetas de Totales -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-emerald-500">
-                        <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total INGRESOS</p>
-                        <h3 id="resumen-total-INGRESOS" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-rose-500">
-                        <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total EGRESOs</p>
-                        <h3 id="resumen-total-EGRESOs" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-blue-500">
-                        <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Balance Neto</p>
-                        <h3 id="resumen-balance" class="text-2xl font-bold text-blue-600 mt-1">L 0.00</h3>
-                    </div>
-                </div>
-
-                <!-- Gráfica y Tabla Resumen -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Gráfica -->
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center items-center">
-                        <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e INGRESOS</h3>
-                        <div class="w-full max-w-xs h-64">
-                            <canvas id="graficoFinanzas"></canvas>
+            <section class="app-tab px-4 py-6">
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <i class="fa-solid fa-chart-column text-emerald-600 mr-2"></i> Resúmenes Financieros
+                        </h2>
+                        <div>
+                            <label class="text-sm font-semibold text-gray-700 mr-2">Filtrar por Mes:</label>
+                            <select id="filtro-mes" onchange="renderizarResumenes()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                                <option value="">Todos los meses</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Tabla de Acumulados por Cuenta/Detalle -->
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                        <h3 class="text-md font-bold text-gray-700 mb-4">Acumulado por Detalle</h3>
-                        <div class="overflow-x-auto max-h-64 overflow-y-auto">
-                            <table class="w-full text-left text-sm">
-                               <thead>
-                                    <tr class="bg-gray-100 text-gray-700 text-xs uppercase">
-                                        <th class="py-2 px-3">Tipo</th>
-                                        <th class="py-2 px-3">Detalle</th>
-                                        <th class="py-2 px-3 text-right">Valor Acumulado</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-resumen-detalles" class="divide-y divide-gray-200">
-                                    <!-- Dinámico -->
-                                </tbody>
-                            </table>
+                    <!-- Tarjetas de Totales -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-emerald-500">
+                            <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Ingresos</p>
+                            <h3 id="resumen-total-ingresos" class="text-2xl font-bold text-emerald-600 mt-1">L 0.00</h3>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-rose-500">
+                            <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Egresos</p>
+                            <h3 id="resumen-total-egresos" class="text-2xl font-bold text-rose-600 mt-1">L 0.00</h3>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 border-l-4 border-l-blue-500">
+                            <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Balance Neto</p>
+                            <h3 id="resumen-balance" class="text-2xl font-bold text-blue-600 mt-1">L 0.00</h3>
+                        </div>
+                    </div>
+
+                    <!-- Gráfica y Tabla Resumen -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center items-center">
+                            <h3 class="text-md font-bold text-gray-700 mb-4 self-start">Distribución de Gastos e Ingresos</h3>
+                            <div class="w-full max-w-xs h-64">
+                                <canvas id="graficoFinanzas"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                            <h3 class="text-md font-bold text-gray-700 mb-4">Acumulado por Detalle</h3>
+                            <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead>
+                                        <tr class="bg-gray-100 text-gray-700 text-xs uppercase">
+                                            <th class="py-2 px-3">Tipo</th>
+                                            <th class="py-2 px-3">Detalle</th>
+                                            <th class="py-2 px-3 text-right">Valor Acumulado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabla-resumen-detalles" class="divide-y divide-gray-200">
+                                        <!-- Dinámico -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -253,8 +255,8 @@
 
     <!-- ================= LÓGICA DE JAVASCRIPT ================= -->
     <script>
-        let detallesINGRESO = JSON.parse(localStorage.getItem('hob_detallesINGRESO')) || ['COMISION'];
-        let detallesEGRESO = JSON.parse(localStorage.getItem('hob_detallesEGRESO')) || ['PAGO DE LUZ'];
+        let detallesIngreso = JSON.parse(localStorage.getItem('hob_detallesIngreso')) || ['Comision'];
+        let detallesEgreso = JSON.parse(localStorage.getItem('hob_detallesEgreso')) || ['Pago De Luz'];
         let movimientos = JSON.parse(localStorage.getItem('hob_movimientos')) || [];
 
         let chartInstancia = null;
@@ -267,15 +269,16 @@
             renderizarResumenes();
         };
 
-        // Desplazamiento lateral real por índice (0: nuevo, 1: historial, 2: resumenes)
-        function cambiarPestana(pestana, index) {
-            const slider = document.getElementById('tabs-slider');
-            slider.style.transform = `translateX(-${index * 33.333}%)`;
+        // Desplazamiento lateral real por traslación de contenedor
+        function cambiarPestana(index, pestana) {
+            const slider = document.getElementById('slider-container');
+            // Desplazar el contenedor horizontalmente según la pestaña (0%, -33.333%, -66.666%)
+            slider.style.transform = `translateX(-${index * 33.3333}%)`;
 
-            const botones = { 'nuevo': 'btn-nuevo', 'historial': 'btn-historial', 'resumenes': 'btn-resumenes' };
-            ['nuevo', 'historial', 'resumenes'].forEach(t => {
-                const btn = document.getElementById(botones[t]);
-                if (t === pestana) {
+            const botones = { 0: 'btn-nuevo', 1: 'btn-historial', 2: 'btn-resumenes' };
+            [0, 1, 2].forEach(i => {
+                const btn = document.getElementById(botones[i]);
+                if (i === index) {
                     btn.className = "px-4 py-2 rounded-md font-medium text-sm transition bg-emerald-800 text-white shadow";
                 } else {
                     btn.className = "px-4 py-2 rounded-md font-medium text-sm transition text-emerald-100 hover:bg-emerald-600";
@@ -296,7 +299,7 @@
             const selectDetalle = document.getElementById('movimiento-detalle');
             selectDetalle.innerHTML = '';
 
-            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             lista.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 
             lista.forEach(item => {
@@ -324,7 +327,7 @@
 
         function renderizarListaGestionDetalles() {
             const cuenta = document.getElementById('cuenta').value;
-            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             lista.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 
             const contenedor = document.getElementById('lista-gestion-detalles');
@@ -359,15 +362,15 @@
                 return;
             }
 
-            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             const existe = lista.some(item => item.toLowerCase() === nuevoDetalle.toLowerCase());
 
             if (!existe) {
                 lista.push(nuevoDetalle);
-                if (cuenta === 'INGRESO') {
-                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
+                if (cuenta === 'Ingreso') {
+                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
-                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
+                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
                 }
             } else {
                 alert('Este detalle ya existe.');
@@ -379,7 +382,7 @@
         }
 
         function editarDetalleModal(cuenta, index) {
-            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             const actual = lista[index];
             const nuevoNombre = prompt("Editar nombre del detalle:", actual);
 
@@ -393,17 +396,17 @@
                 }
                 lista[index] = nombreLimpio;
 
-                if (cuenta === 'INGRESO') {
-                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
+                if (cuenta === 'Ingreso') {
+                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
-                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
+                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
                 }
                 renderizarListaGestionDetalles();
             }
         }
 
         function eliminarDetalleModal(cuenta, index) {
-            let lista = cuenta === 'INGRESO' ? detallesINGRESO : detallesEGRESO;
+            let lista = cuenta === 'Ingreso' ? detallesIngreso : detallesEgreso;
             if (lista.length <= 1) {
                 alert('Debe mantener al menos un detalle en la categoría.');
                 return;
@@ -411,10 +414,10 @@
 
             if (confirm('¿Estás seguro de eliminar este detalle?')) {
                 lista.splice(index, 1);
-                if (cuenta === 'INGRESO') {
-                    localStorage.setItem('hob_detallesINGRESO', JSON.stringify(detallesINGRESO));
+                if (cuenta === 'Ingreso') {
+                    localStorage.setItem('hob_detallesIngreso', JSON.stringify(detallesIngreso));
                 } else {
-                    localStorage.setItem('hob_detallesEGRESO', JSON.stringify(detallesEGRESO));
+                    localStorage.setItem('hob_detallesEgreso', JSON.stringify(detallesEgreso));
                 }
                 renderizarListaGestionDetalles();
             }
@@ -536,13 +539,13 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50 transition border-b";
 
-                const badgeColor = m.cuenta === 'INGRESO' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+                const badgeColor = m.cuenta === 'Ingreso' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
 
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-gray-600 font-medium">${formatearFecha(m.fecha)}</td>
                     <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor}">${m.cuenta}</span></td>
                     <td class="py-3 px-4 font-medium text-gray-800">${m.detalle}</td>
-                    <td class="py-3 px-4 font-bold ${m.cuenta === 'INGRESO' ? 'text-emerald-600' : 'text-rose-600'}">L ${m.valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 font-bold ${m.cuenta === 'Ingreso' ? 'text-emerald-600' : 'text-rose-600'}">L ${m.valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     <td class="py-3 px-4 text-gray-500 truncate max-w-xs">${m.observacion || '-'}</td>
                     <td class="py-3 px-4 text-center space-x-2">
                         <button onclick="cargarParaEditar(${m.id})" class="text-blue-600 hover:text-blue-800 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
@@ -569,7 +572,7 @@
             document.getElementById('btn-guardar').textContent = "Actualizar Movimiento";
             document.getElementById('btn-cancelar').classList.remove('hidden');
 
-            cambiarPestana('nuevo', 0);
+            cambiarPestana(0, 'nuevo');
         }
 
         function eliminarMovimiento(id) {
@@ -590,56 +593,56 @@
                 return m.fecha.startsWith(mesSeleccionado);
             });
 
-            let totalINGRESOS = 0;
-            let totalEGRESOs = 0;
-            const INGRESOSDetalle = {};
-            const EGRESOsDetalle = {};
+            let totalIngresos = 0;
+            let totalEgresos = 0;
+            const ingresosDetalle = {};
+            const egresosDetalle = {};
 
             filtrados.forEach(m => {
-                if (m.cuenta === 'INGRESO') {
-                    totalINGRESOS += m.valor;
-                    INGRESOSDetalle[m.detalle] = (INGRESOSDetalle[m.detalle] || 0) + m.valor;
+                if (m.cuenta === 'Ingreso') {
+                    totalIngresos += m.valor;
+                    ingresosDetalle[m.detalle] = (ingresosDetalle[m.detalle] || 0) + m.valor;
                 } else {
-                    totalEGRESOs += m.valor;
-                    EGRESOsDetalle[m.detalle] = (EGRESOsDetalle[m.detalle] || 0) + m.valor;
+                    totalEgresos += m.valor;
+                    egresosDetalle[m.detalle] = (egresosDetalle[m.detalle] || 0) + m.valor;
                 }
             });
 
-            const balance = totalINGRESOS - totalEGRESOs;
+            const balance = totalIngresos - totalEgresos;
 
-            document.getElementById('resumen-total-INGRESOS').textContent = `L ${totalINGRESOS.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('resumen-total-EGRESOs').textContent = `L ${totalEGRESOs.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('resumen-total-ingresos').textContent = `L ${totalIngresos.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('resumen-total-egresos').textContent = `L ${totalEgresos.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             
             const elBalance = document.getElementById('resumen-balance');
             elBalance.textContent = `L ${balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             elBalance.className = `text-2xl font-bold mt-1 ${balance >= 0 ? 'text-blue-600' : 'text-rose-600'}`;
 
-            const INGRESOSOrdenados = Object.entries(INGRESOSDetalle).sort((a, b) => b[1] - a[1]);
-            const EGRESOsOrdenados = Object.entries(EGRESOsDetalle).sort((a, b) => b[1] - a[1]);
+            const ingresosOrdenados = Object.entries(ingresosDetalle).sort((a, b) => b[1] - a[1]);
+            const egresosOrdenados = Object.entries(egresosDetalle).sort((a, b) => b[1] - a[1]);
 
             const tbodyDetalles = document.getElementById('tabla-resumen-detalles');
             tbodyDetalles.innerHTML = '';
 
-            const totalElementos = INGRESOSOrdenados.length + EGRESOsOrdenados.length;
+            const totalElementos = ingresosOrdenados.length + egresosOrdenados.length;
             if (totalElementos === 0) {
                 tbodyDetalles.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-gray-400">No hay datos para este período.</td></tr>`;
             } else {
-                INGRESOSOrdenados.forEach(([detalle, valor]) => {
+                ingresosOrdenados.forEach(([detalle, valor]) => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
-                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">INGRESO</span></td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Ingreso</span></td>
                         <td class="py-2.5 px-3 font-medium text-gray-800">${detalle}</td>
                         <td class="py-2.5 px-3 text-right font-semibold text-emerald-600">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     `;
                     tbodyDetalles.appendChild(tr);
                 });
 
-                EGRESOsOrdenados.forEach(([detalle, valor]) => {
+                egresosOrdenados.forEach(([detalle, valor]) => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 border-b";
                     tr.innerHTML = `
-                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">EGRESO</span></td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">Egreso</span></td>
                         <td class="py-2.5 px-3 font-medium text-gray-800">${detalle}</td>
                         <td class="py-2.5 px-3 text-right font-semibold text-rose-600">L ${valor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     `;
@@ -653,9 +656,9 @@
             chartInstancia = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['INGRESOS', 'EGRESOs'],
+                    labels: ['Ingresos', 'Egresos'],
                     datasets: [{
-                        data: [totalINGRESOS, totalEGRESOs],
+                        data: [totalIngresos, totalEgresos],
                         backgroundColor: ['#10b981', '#f43f5e'],
                         borderWidth: 2
                     }]
