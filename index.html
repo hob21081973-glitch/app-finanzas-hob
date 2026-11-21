@@ -45,6 +45,7 @@
             </nav>
         </div>
     </header>
+
     <!-- Contenedor Principal -->
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
         <!-- ================= 1. PESTAÑA NUEVO MOVIMIENTO ================= -->
@@ -103,6 +104,7 @@
                 </div>
             </form>
         </section>
+
         <!-- ================= 2. PESTAÑA HISTORIAL DE MOVIMIENTOS ================= -->
         <section id="pestana-historial" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -141,6 +143,7 @@
                 </div>
             </div>
         </section>
+
         <!-- ================= 3. PESTAÑA RESÚMENES ================= -->
         <section id="pestana-resumenes" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -199,6 +202,7 @@
             </div>
         </section>
     </main>
+
     <!-- ================= MODAL PARA GESTIONAR DETALLES ================= -->
     <div id="modal-detalle" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden justify-center items-center z-50 p-4">
         <div class="bg-white p-6 rounded-xl shadow-xl max-w-md w-full space-y-4">
@@ -220,10 +224,12 @@
             </div>
         </div>
     </div>
+
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
         Finanzas HOH &copy; 2026 - Desarrollado para gestión financiera personal en Lempiras (L)
     </footer>
+
     <!-- ================= LÓGICA DE JAVASCRIPT ================= -->
     <script>
         let rawIngresos = JSON.parse(localStorage.getItem('hob_detallesIngreso')) || ['COMISION'];
@@ -234,9 +240,10 @@
         movimientos.forEach(m => {
             m.cuenta = m.cuenta.toUpperCase();
             m.detalle = m.detalle.toUpperCase();
-            if(m.observacion) m.observacion = m.observacion.toUpperCase();
+            if (m.observacion) m.observacion = m.observacion.toUpperCase();
         });
         let chartInstancia = null;
+
         window.onload = function() {
             document.getElementById('fecha').valueAsDate = new Date();
             actualizarDetalles();
@@ -273,7 +280,7 @@
             lector.onload = function(e) {
                 try {
                     const contenido = JSON.parse(e.target.result);
-                    
+
                     if (!contenido.movimientos || !contenido.detallesIngreso || !contenido.detallesEgreso) {
                         alert('El archivo seleccionado no es un respaldo válido de Finanzas HOH.');
                         return;
@@ -284,12 +291,15 @@
                         localStorage.setItem('hob_detallesIngreso', JSON.stringify(contenido.detallesIngreso));
                         localStorage.setItem('hob_detallesEgreso', JSON.stringify(contenido.detallesEgreso));
 
-                        // Recargar variables en memoria
-                        movimientos = contenido.movimientos;
+                        movimientos = contenido.movimientos.map(m => ({
+                            ...m,
+                            cuenta: (m.cuenta || '').toUpperCase(),
+                            detalle: (m.detalle || '').toUpperCase(),
+                            observacion: (m.observacion || '').toUpperCase()
+                        }));
                         detallesIngreso = contenido.detallesIngreso.map(i => i.toUpperCase());
                         detallesEgreso = contenido.detallesEgreso.map(i => i.toUpperCase());
 
-                        // Actualizar interfaz
                         actualizarDetalles();
                         poblarSelectoresMeses();
                         renderizarHistorial();
@@ -301,7 +311,6 @@
                     alert('Hubo un error al leer el archivo JSON.');
                     console.error(error);
                 }
-                // Limpiar input file
                 event.target.value = '';
             };
             lector.readAsText(archivo);
@@ -330,6 +339,7 @@
                 renderizarResumenes();
             }
         }
+
         function actualizarDetalles() {
             const cuenta = document.getElementById('cuenta').value.toUpperCase();
             const selectDetalle = document.getElementById('movimiento-detalle');
@@ -343,6 +353,7 @@
                 selectDetalle.appendChild(option);
             });
         }
+
         function abrirModalDetalle() {
             const cuenta = document.getElementById('cuenta').value.toUpperCase();
             document.getElementById('modal-subtitulo').textContent = `Administrar detalles para la categoría de ${cuenta}.`;
@@ -351,11 +362,13 @@
             document.getElementById('modal-detalle').classList.remove('hidden');
             document.getElementById('modal-detalle').classList.add('flex');
         }
+
         function cerrarModalDetalle() {
             document.getElementById('modal-detalle').classList.remove('flex');
             document.getElementById('modal-detalle').classList.add('hidden');
             actualizarDetalles();
         }
+
         function renderizarListaGestionDetalles() {
             const cuenta = document.getElementById('cuenta').value.toUpperCase();
             let lista = cuenta === 'INGRESO' ? detallesIngreso : detallesEgreso;
@@ -380,6 +393,7 @@
                 contenedor.appendChild(div);
             });
         }
+
         function guardarNuevoDetalle() {
             const nuevoDetalle = document.getElementById('nuevo-detalle-input').value.trim().toUpperCase();
             const cuenta = document.getElementById('cuenta').value.toUpperCase();
@@ -403,6 +417,7 @@
             document.getElementById('nuevo-detalle-input').value = '';
             renderizarListaGestionDetalles();
         }
+
         function editarDetalleModal(cuenta, index) {
             let lista = cuenta === 'INGRESO' ? detallesIngreso : detallesEgreso;
             const actual = lista[index];
@@ -422,6 +437,7 @@
                 renderizarListaGestionDetalles();
             }
         }
+
         function eliminarDetalleModal(cuenta, index) {
             let lista = cuenta === 'INGRESO' ? detallesIngreso : detallesEgreso;
             if (lista.length <= 1) {
@@ -438,6 +454,7 @@
                 renderizarListaGestionDetalles();
             }
         }
+
         function formatearFecha(fechaStr) {
             if (!fechaStr) return '';
             const partes = fechaStr.split('-');
@@ -446,6 +463,7 @@
             }
             return fechaStr;
         }
+
         function guardarMovimiento(event) {
             event.preventDefault();
             const id = document.getElementById('movimiento-id').value;
@@ -476,6 +494,7 @@
             limpiarFormulario();
             alert('¡Movimiento guardado exitosamente!');
         }
+
         function limpiarFormulario() {
             document.getElementById('form-movimiento').reset();
             document.getElementById('movimiento-id').value = '';
@@ -486,6 +505,7 @@
             actualizarDetalles();
             document.getElementById('fecha').focus();
         }
+
         function poblarSelectoresMeses() {
             const selectMesHistorial = document.getElementById('buscador-mes');
             const selectMesResumen = document.getElementById('filtro-mes');
@@ -512,6 +532,7 @@
             if (mesesArray.includes(valHistorial)) selectMesHistorial.value = valHistorial;
             if (mesesArray.includes(valResumen)) selectMesResumen.value = valResumen;
         }
+
         function renderizarHistorial() {
             const tbody = document.getElementById('tabla-historial');
             const mensajeVacio = document.getElementById('historial-vacio');
@@ -550,6 +571,7 @@
                 tbody.appendChild(tr);
             });
         }
+
         function cargarParaEditar(id) {
             const m = movimientos.find(item => item.id == id);
             if (!m) return;
@@ -565,6 +587,7 @@
             document.getElementById('btn-cancelar').classList.remove('hidden');
             cambiarPestana('nuevo');
         }
+
         function eliminarMovimiento(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este movimiento?')) {
                 movimientos = movimientos.filter(m => m.id != id);
@@ -574,6 +597,7 @@
                 renderizarResumenes();
             }
         }
+
         function renderizarResumenes() {
             const mesSeleccionado = document.getElementById('filtro-mes').value;
             const filtrados = movimientos.filter(m => {
@@ -603,7 +627,6 @@
             const ingresosOrdenados = Object.entries(ingresosDetalle).sort((a, b) => b[1] - a[1]);
             const egresosOrdenados = Object.entries(egresosDetalle).sort((a, b) => b[1] - a[1]);
             const tbodyDetalles = document.getElementById('tabla-resumen-detalles');
-            tbodyDetalles.innerHTML = {};
             tbodyDetalles.innerHTML = '';
             const totalElementos = ingresosOrdenados.length + egresosOrdenados.length;
             if (totalElementos === 0) {
@@ -652,8 +675,3 @@
     </script>
 </body>
 </html>
-```[cite: 7]
-
-### ¿Cómo usar esta nueva función?
-* **Para respaldar:** Haz clic en el botón verde **"Respaldar"** en la parte superior derecha de la barra de navegación. Se descargará de inmediato un archivo con formato `.json` en tu dispositivo con toda tu información financiera y categorías personalizadas.
-* **Para restaurar:** Haz clic en **"Restaurar"**, selecciona el archivo de respaldo guardado previamente y la aplicación actualizará automáticamente toda tu información al instante.
